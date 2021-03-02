@@ -22,17 +22,15 @@
 
 using namespace cpprobotics;
 
-int main(){
+int main() {
   State init_state(0, 0, 0, CONST_V);
   TrajState target_(5, 2.0, 0);
   MotionModel m_model(L, DS, init_state);
-
-  Parameter p_(6, {{0,0,0}});
+  Parameter p_(6, {{0, 0, 0}});
   float cost_th_ = 0.1;
   std::vector<float> h_step_{0.2, 0.005, 0.005};
   int max_iter = 100;
-
   TrajectoryOptimizer traj_opti_obj(m_model, p_, target_);
-  Traj traj = traj_opti_obj.optimizer_traj(max_iter, cost_th_, h_step_, true, true);
-
+  Traj traj = traj_opti_obj.optimizer_traj(max_iter, cost_th_, h_step_, true,
+      true);
 };
