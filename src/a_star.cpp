@@ -10,13 +10,13 @@
 #include<limits>
 #include<queue>
 #include<vector>
+//包含了opencv的头文件
 #include<opencv2/opencv.hpp>
 #include<opencv2/core/core.hpp>
 #include<opencv2/highgui/highgui.hpp>
 
 using namespace std;
-
-
+// Node类
 class Node {
  public:
   int x;
@@ -28,7 +28,7 @@ class Node {
     sum_cost(sum_cost_), p_node(p_node_) {};
 };
 
-
+//计算最终点
 std::vector<std::vector<float> > calc_final_path(Node *goal, float reso,
   cv::Mat &img, float img_reso) {
   std::vector<float> rx;
@@ -38,6 +38,7 @@ std::vector<std::vector<float> > calc_final_path(Node *goal, float reso,
     node = node->p_node;
     rx.push_back(node->x * reso);
     ry.push_back(node->y * reso);
+    //画了一个矩形？
     cv::rectangle(img,
       cv::Point(node->x * img_reso + 1, node->y * img_reso + 1),
       cv::Point((node->x + 1)*img_reso, (node->y + 1)*img_reso),
@@ -76,7 +77,7 @@ std::vector<std::vector<int> > calc_obstacle_map(
   return obmap;
 }
 
-
+//节点是否在正常范围
 bool verify_node(Node *node,
   vector<vector<int> > obmap,
   int min_ox, int max_ox,
@@ -93,9 +94,10 @@ bool verify_node(Node *node,
 
 
 float calc_heristic(Node *n1, Node *n2, float w = 1.0) {
+  //欧式距离乘以w权重  w=1.0 为什么？
   return w * std::sqrt(std::pow(n1->x - n2->x, 2) + std::pow(n1->y - n2->y, 2));
 }
-
+//得到节点模型
 std::vector<Node> get_motion_model() {
   return {Node(1,   0,  1),
       Node(0,   1,  1),
@@ -122,6 +124,7 @@ void a_star_planning(float sx, float sy,
   int min_oy = std::numeric_limits<int>::max();
   int max_oy = std::numeric_limits<int>::min();
   for (float iox : ox_) {
+    //取最近的整数
     int map_x = (int)std::round(iox * 1.0 / reso);
     ox.push_back(map_x);
     min_ox = std::min(map_x, min_ox);
@@ -133,11 +136,14 @@ void a_star_planning(float sx, float sy,
     min_oy = std::min(map_y, min_oy);
     max_oy = std::max(map_y, max_oy);
   }
+  //得到宽度
   int xwidth = max_ox - min_ox;
   int ywidth = max_oy - min_oy;
+  //可视化
   //visualization
   cv::namedWindow("astar", cv::WINDOW_NORMAL);
   int count = 0;
+  //分辨率设置为５
   int img_reso = 5;
   cv::Mat bg(img_reso * xwidth,
     img_reso * ywidth,

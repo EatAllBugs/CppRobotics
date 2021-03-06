@@ -16,6 +16,7 @@ using namespace std;
 using namespace cpprobotics;
 
 int main() {
+  //障碍物列表
   std::vector<vector<float> > obstacle_list{
     {5, 5, 1},
     {3, 6, 2},
