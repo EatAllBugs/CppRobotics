@@ -14,7 +14,7 @@
 #include<opencv2/core/core.hpp>
 #include<opencv2/highgui/highgui.hpp>
 #include"motion_model.h"
-#include"../trajectory_optimizer.h"
+#include"trajectory_optimizer.h"
 
 #define L 1.0
 #define DS 0.1

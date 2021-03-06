@@ -45,7 +45,7 @@ std::vector<std::vector<float> > calc_final_path(Node *goal, float reso,
   return {rx, ry};
 }
 
-
+//计算出地图的障碍物层
 std::vector<std::vector<int> > calc_obstacle_map(
   std::vector<int> ox, std::vector<int> oy,
   const int min_ox, const int max_ox,
@@ -75,7 +75,7 @@ std::vector<std::vector<int> > calc_obstacle_map(
   return obmap;
 }
 
-
+//节点是否有效
 bool verify_node(Node *node,
   vector<vector<int> > obmap,
   int min_ox, int max_ox,
@@ -90,11 +90,11 @@ bool verify_node(Node *node,
   return true;
 }
 
-
+//计算欧式距离
 float calc_heristic(Node n1, Node n2, float w = 1.0) {
   return w * std::sqrt(std::pow(n1.x - n2.x, 2) + std::pow(n1.y - n2.y, 2));
 }
-
+//运动模型
 std::vector<Node> get_motion_model() {
   return {Node(1,   0,  1),
       Node(0,   1,  1),
@@ -105,15 +105,18 @@ std::vector<Node> get_motion_model() {
       Node(1,   -1,  std::sqrt(2)),
       Node(1,    1,  std::sqrt(2))};
 }
-
+//规划函数
 void dijkstra_star_planning(float sx, float sy,
   float gx, float gy,
   vector<float> ox_, vector<float> oy_,
   float reso, float rr) {
+  //起点
   Node *nstart = new Node((int)std::round(sx / reso), (int)std::round(sy / reso),
     0.0);
+  //终点
   Node *ngoal = new Node((int)std::round(gx / reso), (int)std::round(gy / reso),
     0.0);
+  //min_ox min_oy max_ox max_oy 分别是边界坐标
   vector<int> ox;
   vector<int> oy;
   int min_ox = std::numeric_limits<int>::max();
@@ -132,12 +135,15 @@ void dijkstra_star_planning(float sx, float sy,
     min_oy = std::min(map_y, min_oy);
     max_oy = std::max(map_y, max_oy);
   }
+  //由边界坐标得到了宽度
   int xwidth = max_ox - min_ox;
   int ywidth = max_oy - min_oy;
-  //visualization
+  //可视化
   cv::namedWindow("astar", cv::WINDOW_NORMAL);
   int count = 0;
+  //分辨率
   int img_reso = 5;
+  //RGB3通道就用CV_8UC3
   cv::Mat bg(img_reso * xwidth,
     img_reso * ywidth,
     CV_8UC3,
